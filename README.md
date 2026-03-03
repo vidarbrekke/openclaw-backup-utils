@@ -6,18 +6,20 @@ Smart OpenClaw disaster recovery and backup system.
 
 ### Create Backup
 ```bash
-./backup.sh [--dry-run] [--upload-google-drive]
+./backup.sh [--dry-run] [--upload-google-drive] [--cron]
 ```
+
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Test without creating backup |
+| `--upload-google-drive` | Upload backup to Google Drive |
+| `--cron` | Enable cron mode (cleanup old backups) |
 
 ### Restore
 ```bash
 ./restore.sh /path/to/backup.tar.gz
 ./restore.sh --latest  # Use most recent backup
-```
-
-### List Backups
-```bash
-./restore.sh --list-backups
+./restore.sh --list-backups  # List available backups
 ```
 
 ## What's Backed Up
