@@ -15,7 +15,7 @@ BACKUP_DIR="/root/openclaw-stock-home/.openclaw/backups"
 LOG_FILE="${BACKUP_DIR}/backup.log"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="openclaw-disaster-recovery-${TIMESTAMP}.tar.gz"
-MANIFEST_FILE="openclaw-disaster-recovery-${TIMESTAMP}.manifest.json"
+MANIFEST_FILE="${BACKUP_DIR}/openclaw-disaster-recovery-${TIMESTAMP}.manifest.json"
 
 # Parse arguments
 DRY_RUN=false
@@ -218,10 +218,8 @@ fi
 ln -sf "${BACKUP_FILE}" "${BACKUP_DIR}/latest.tar.gz"
 log "Created symlink: latest.tar.gz -> ${BACKUP_FILE}"
 
-# Copy manifest to backup dir
-MANIFEST_BASENAME=$(basename "${MANIFEST_FILE}")
-cp "${WORKSPACE}/${MANIFEST_BASENAME}" "${BACKUP_DIR}/"
-log "Manifest saved: ${MANIFEST_BASENAME}"
+# Copy manifest to backup dir (already in correct location)
+log "Manifest saved: $(basename "${MANIFEST_FILE}")"
 
 # Upload to Google Drive if requested
 if [[ "${UPLOAD_GDRIVE}" == "true" ]]; then
@@ -271,6 +269,5 @@ done < <(jq -r '.postBackupCommands[]? // empty' "${RULES_FILE}")
 
 # Clean up temp files
 rm -f "${EXCLUDE_FILE}" "${INCLUDE_FILE}"
-rm -f "${WORKSPACE}/$(basename "${MANIFEST_FILE}")"
 
 log "Backup completed successfully!"
