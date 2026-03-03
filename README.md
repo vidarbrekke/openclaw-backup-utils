@@ -72,6 +72,9 @@ Add to crontab for daily backups at 03:00:
 - `docs/ARCHITECTURE.md` - Technical design
 - `docs/BACKUP_RULES.md` - Pattern reference
 - `docs/RESTORATION_GUIDE.md` - Detailed restore procedure
+- `docs/GOOGLE_DRIVE_SETUP.md` - Google Drive CLI setup guide
+
+## License
 
 ## License
 
