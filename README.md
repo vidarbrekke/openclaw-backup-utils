@@ -12,7 +12,7 @@ Smart OpenClaw disaster recovery and backup system.
 | Option | Description |
 |--------|-------------|
 | `--dry-run` | Test without creating backup |
-| `--upload-google-drive` | Upload backup to Google Drive |
+| `--upload-google-drive` | Upload backup to Google Drive (requires `gdrive` CLI) |
 | `--cron` | Enable cron mode (cleanup old backups) |
 
 ### Restore
