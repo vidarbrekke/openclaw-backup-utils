@@ -39,6 +39,20 @@ Smart OpenClaw disaster recovery and backup system.
 - Test artifacts - regenerate via `npm test`
 - Logs - recreated on next run
 
+## Google Drive Setup
+
+For automatic Google Drive uploads, install the `gdrive` CLI:
+
+```bash
+# Install gdrive CLI
+wget https://github.com/gdrive-org/gdrive/releases/download/2.1.1/gdrive-linux-x64 -O /usr/local/bin/gdrive && chmod +x /usr/local/bin/gdrive
+
+# Authenticate with Google Drive
+gdrive about
+```
+
+The script will automatically use `gdrive` if available.
+
 ## Configuration
 
 Edit `backup-rules.json` to customize:
