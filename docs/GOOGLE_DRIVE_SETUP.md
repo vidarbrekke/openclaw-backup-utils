@@ -12,12 +12,16 @@ gog drive ls  # List files in root folder
 
 ## Authenticate with Google Drive
 
-If you haven't authenticated yet, run:
-```bash
-gog drive ls
-```
+Authentication is already configured. The script uses `GOG_KEYRING_PASSWORD` from your environment.
 
-This will open a browser window for Google authentication. Follow the prompts to authorize gog to access your Google Drive.
+If you need to re-authenticate:
+```bash
+# Set the keyring password
+export GOG_KEYRING_PASSWORD="your_keyring_password"
+
+# Authenticate
+gog auth login
+```
 
 ## Configure Backup Script
 

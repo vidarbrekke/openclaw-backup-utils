@@ -230,6 +230,9 @@ if [[ "${UPLOAD_GDRIVE}" == "true" ]]; then
   
   # Check if gog CLI is available
   if command -v gog &> /dev/null; then
+    # Export GOG_KEYRING_PASSWORD for non-interactive auth
+    export GOG_KEYRING_PASSWORD="${GOG_KEYRING_PASSWORD:-Ret13rer?}"
+    
     # Upload backup using gog CLI
     log "Uploading backup file using gog CLI..."
     if gog drive upload "${BACKUP_PATH}" --parent "${PARENT_ID}" --name "${BACKUP_FILE}" 2>&1 | tee -a "${LOG_FILE}"; then
