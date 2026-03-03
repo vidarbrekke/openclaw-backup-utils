@@ -1,24 +1,23 @@
 # Google Drive Setup Guide
 
-## Install gdrive CLI
+## gog CLI is Already Installed
 
+The `gog` CLI is already installed at `/root/openclaw-stock-home/.local/bin/gog` and is available in your `PATH`.
+
+Verify installation:
 ```bash
-# Download and install gdrive CLI
-wget https://github.com/gdrive-org/gdrive/releases/download/2.1.1/gdrive-linux-x64 -O /usr/local/bin/gdrive && chmod +x /usr/local/bin/gdrive
-
-# Verify installation
-gdrive about
+gog --version
+gog drive ls  # List files in root folder
 ```
 
 ## Authenticate with Google Drive
 
+If you haven't authenticated yet, run:
 ```bash
-# Run gdrive to start authentication
-gdrive about
-
-# This will open a browser window for Google authentication
-# Follow the prompts to authorize gdrive to access your Google Drive
+gog drive ls
 ```
+
+This will open a browser window for Google authentication. Follow the prompts to authorize gog to access your Google Drive.
 
 ## Configure Backup Script
 
@@ -47,19 +46,19 @@ If not specified, it defaults to: `1b9uskrej-gjGVG-RmeaSYdPk0deUOa3R` (OpenClaw_
 
 ## Troubleshooting
 
-### gdrive not found
+### gog not found
 ```
-ERROR: gdrive CLI not found
+WARNING: gog CLI not found, skipping Google Drive upload
 ```
 
-**Solution**: Install gdrive CLI (see above)
+**Solution**: The `gog` CLI should already be installed. Check `/root/openclaw-stock-home/.local/bin/gog`.
 
 ### Authentication error
 ```
-Error: Unable to list about
+Error: unable to list files
 ```
 
-**Solution**: Run `gdrive about` and authenticate with your Google account
+**Solution**: Run `gog drive ls` and authenticate with your Google account
 
 ### Permission denied
 ```

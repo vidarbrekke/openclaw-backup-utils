@@ -228,27 +228,26 @@ if [[ "${UPLOAD_GDRIVE}" == "true" ]]; then
   # Get parent folder ID from rules or use default
   PARENT_ID=$(jq -r '.parentId // "1b9uskrej-gjGVG-RmeaSYdPk0deUOa3R"' "${RULES_FILE}" 2>/dev/null || echo "1b9uskrej-gjGVG-RmeaSYdPk0deUOa3R")
   
-  # Check if gdrive CLI is available
-  if command -v gdrive &> /dev/null; then
-    # Upload backup using gdrive CLI
-    log "Uploading backup file using gdrive CLI..."
-    if gdrive upload "${BACKUP_PATH}" --parent "${PARENT_ID}" --name "${BACKUP_FILE}" 2>&1 | tee -a "${LOG_FILE}"; then
+  # Check if gog CLI is available
+  if command -v gog &> /dev/null; then
+    # Upload backup using gog CLI
+    log "Uploading backup file using gog CLI..."
+    if gog drive upload "${BACKUP_PATH}" --parent "${PARENT_ID}" --name "${BACKUP_FILE}" 2>&1 | tee -a "${LOG_FILE}"; then
       log "Backup file uploaded successfully"
     else
       log "WARNING: Google Drive upload of backup failed"
     fi
     
     # Upload manifest
-    log "Uploading manifest file using gdrive CLI..."
-    if gdrive upload "${BACKUP_DIR}/${MANIFEST_FILE}" --parent "${PARENT_ID}" --name "$(basename "${MANIFEST_FILE}")" 2>&1 | tee -a "${LOG_FILE}"; then
+    log "Uploading manifest file using gog CLI..."
+    if gog drive upload "${BACKUP_DIR}/${MANIFEST_FILE}" --parent "${PARENT_ID}" --name "$(basename "${MANIFEST_FILE}")" 2>&1 | tee -a "${LOG_FILE}"; then
       log "Manifest file uploaded successfully"
     else
       log "WARNING: Google Drive upload of manifest failed"
     fi
   else
-    log "WARNING: gdrive CLI not found, skipping Google Drive upload"
-    log "To enable Google Drive uploads, install gdrive CLI:"
-    log "  wget https://github.com/gdrive-org/gdrive/releases/download/2.1.1/gdrive-linux-x64 -O /usr/local/bin/gdrive && chmod +x /usr/local/bin/gdrive"
+    log "WARNING: gog CLI not found, skipping Google Drive upload"
+    log "To enable Google Drive uploads, ensure gog CLI is installed"
   fi
   
   log "Google Drive upload complete"

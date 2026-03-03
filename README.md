@@ -12,7 +12,7 @@ Smart OpenClaw disaster recovery and backup system.
 | Option | Description |
 |--------|-------------|
 | `--dry-run` | Test without creating backup |
-| `--upload-google-drive` | Upload backup to Google Drive (requires `gdrive` CLI) |
+| `--upload-google-drive` | Upload backup to Google Drive (requires `gog` CLI) |
 | `--cron` | Enable cron mode (cleanup old backups) |
 
 ### Restore
@@ -41,17 +41,14 @@ Smart OpenClaw disaster recovery and backup system.
 
 ## Google Drive Setup
 
-For automatic Google Drive uploads, install the `gdrive` CLI:
+The backup script uses the `gog` CLI (Google CLI for Workspace) for uploads.
 
+`gog` is already installed at `/root/openclaw-stock-home/.local/bin/gog` and is available in your `PATH`.
+
+To enable Google Drive uploads, authenticate with your Google account:
 ```bash
-# Install gdrive CLI
-wget https://github.com/gdrive-org/gdrive/releases/download/2.1.1/gdrive-linux-x64 -O /usr/local/bin/gdrive && chmod +x /usr/local/bin/gdrive
-
-# Authenticate with Google Drive
-gdrive about
+gog drive ls  # This will authenticate if needed
 ```
-
-The script will automatically use `gdrive` if available.
 
 ## Configuration
 
@@ -72,7 +69,7 @@ Add to crontab for daily backups at 03:00:
 - `docs/ARCHITECTURE.md` - Technical design
 - `docs/BACKUP_RULES.md` - Pattern reference
 - `docs/RESTORATION_GUIDE.md` - Detailed restore procedure
-- `docs/GOOGLE_DRIVE_SETUP.md` - Google Drive CLI setup guide
+- `docs/GOOGLE_DRIVE_SETUP.md` - Google Drive setup guide
 
 ## License
 
