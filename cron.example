@@ -1,0 +1,59 @@
+# Crontab Example
+
+For automatic daily backups, add this to your crontab:
+
+```bash
+# Edit crontab
+crontab -e
+
+# Add this line (runs at 03:00 UTC daily):
+0 3 * * * /root/openclaw-stock-home/.openclaw/workspace/repositories/openclaw-backup-utils/backup.sh --cron --upload-google-drive
+```
+
+## Schedule Options
+
+| Schedule | Cron Expression | Description |
+|----------|-----------------|-------------|
+| Daily at 3 AM | `0 3 * * *` | Daily backup |
+| Every 6 hours | `0 */6 * * *` | 4x daily backup |
+| Weekly (Sunday 4 AM) | `0 4 * * 0` | Weekly backup |
+| Monthly (1st, 5 AM) | `0 5 1 * *` | Monthly backup |
+
+## Google Drive Upload
+
+To enable Google Drive uploads, ensure:
+1. `gog-agentic` MCP server is configured
+2. `backup-rules.json` has `parentId` set (or use default `1b9uskrej-gjGVG-RmeaSYdPk0deUOa3R`)
+
+## Monitoring
+
+To monitor backups, check:
+```bash
+# View backup log
+tail -f /root/openclaw-stock-home/.openclaw/backups/backup.log
+
+# List backups
+ls -lh /root/openclaw-stock-home/.openclaw/backups/
+```
+
+## Dry Run (No Upload)
+
+For testing without upload:
+```bash
+0 3 * * * /root/openclaw-stock-home/.openclaw/workspace/repositories/openclaw-backup-utils/backup.sh --cron
+```
+
+## Manual Test
+
+To test cron job manually:
+```bash
+/root/openclaw-stock-home/.openclaw/workspace/repositories/openclaw-backup-utils/backup.sh --cron --upload-google-drive
+```
+
+## Cron Logs
+
+System cron logs are at:
+```bash
+# Debian/Ubuntu
+tail -f /var/log/syslog | grep CRON
+```

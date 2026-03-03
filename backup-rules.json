@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "description": "Smart backup rules for OpenClaw instances - excludes restorable content, includes unique data",
+  "backupRoot": "/root/openclaw-stock-home/.openclaw",
+  "exclusions": [
+    { "pattern": "**/node_modules/**", "reason": "reinstallable dependencies via npm/pnpm" },
+    { "pattern": "**/.git/**", "reason": "version-controlled code - recover via git clone" },
+    { "pattern": "**/.playwright-mcp/**", "reason": "test assets - regenerate via tests" },
+    { "pattern": "**/build/**", "reason": "compiled outputs - rebuild via npm run build" },
+    { "pattern": "**/dist/**", "reason": "compiled outputs - rebuild via npm run build" },
+    { "pattern": "**/dist*/**", "reason": "compiled outputs - rebuild via npm run build" },
+    { "pattern": "**/tmp/**", "reason": "temporary files" },
+    { "pattern": "**/venv/**", "reason": "virtual environment - recreate via python -m venv" },
+    { "pattern": "**/*.test.ts", "reason": "test code - recreate from source" },
+    { "pattern": "**/*.spec.ts", "reason": "test code - recreate from source" },
+    { "pattern": "**/test-results/**", "reason": "test artifacts" },
+    { "pattern": "**/playwright-report/**", "reason": "test artifacts" },
+    { "pattern": "**/coverage/**", "reason": "test artifacts" },
+    { "pattern": "**/public/opencv*.js", "reason": "CDN-hosted WASM - recreate via npm" },
+    { "pattern": "**/public/test*.html", "reason": "dev/test pages - recreate" },
+    { "pattern": "**/public/testimg/**", "reason": "test images - recreate" },
+    { "pattern": "**/*.log", "reason": "runtime logs" },
+    { "pattern": "**/server.log", "reason": "runtime logs" },
+    { "pattern": "**/.DS_Store", "reason": "OS metadata" },
+    { "pattern": "**/.env*.local*", "reason": "environment secrets - handled separately via .env.example" },
+    { "pattern": "**/logs/audit-*.log", "reason": "runtime logs - recreated on next run" }
+  ],
+  "inclusions": [
+    { "pattern": "**/*.md", "reason": "human-readable documentation - unique human knowledge" },
+    { "pattern": "**/.env", "reason": "current environment configuration - secrets/keys" },
+    { "pattern": "**/.env.example", "reason": "template environment config" },
+    { "pattern": "**/credentials*.json", "reason": "OAuth credentials - unique tokens" },
+    { "pattern": "**/backup-rules.json", "reason": "backup configuration" },
+    { "pattern": "**/sketches/**", "reason": "sketches/data from human - unique creative input" },
+    { "pattern": "**/memory/**", "reason": "daily logs + long-term memory - assistant state" },
+    { "pattern": "**/openclaw.json", "reason": "OpenClaw instance config - unique setup" },
+    { "pattern": "**/skills/**/*", "reason": "custom skills - unique implementations" },
+    { "pattern": "**/scripts/**/*", "reason": "automation scripts - unique workflows" },
+    { "pattern": "**/repositories/**/*", "reason": "repositories - business logic/code not in public repos" },
+    { "pattern": "**/.openclaw/**/*", "reason": "OpenClaw runtime data - unique instance state" },
+    { "pattern": "**/.config/**/*", "reason": "config files - unique settings" },
+    { "pattern": "**/.pi/**/*", "reason": "personal/pi data - unique" }
+  ],
+  "postBackupCommands": [
+    "echo \"Backup completed at $(date)\" >> /root/openclaw-stock-home/.openclaw/backups/backup.log"
+  ],
+  "retention": {
+    "maxBackups": 30,
+    "minAgeDays": 7
+  }
+}

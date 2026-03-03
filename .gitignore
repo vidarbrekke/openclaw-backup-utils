@@ -1,0 +1,31 @@
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore backup files (we're backing up, not including backups in the repo)
+*.tar.gz
+*.manifest.json
+*.log
+backup.log
+
+# Ignore temporary files
+tmp/
+temp/
+
+# Ignore environment files (secrets)
+.env
+.env.*
+.env.local
+.env*.local
+
+# Ignore node_modules
+node_modules/
+
+# Ignore .git directories
+.git/
+.gitmodules
+
+# Ignore build artifacts
+build/
+dist/
+out/
