@@ -9,6 +9,12 @@
 
 set -euo pipefail
 
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${REPO_DIR}/.env.backup" ]]; then
+  # shellcheck disable=SC1091
+  source "${REPO_DIR}/.env.backup"
+fi
+
 WORKSPACE="/root/openclaw-stock-home/.openclaw/workspace"
 RULES_FILE="${WORKSPACE}/backup-rules.json"
 BACKUP_DIR="/root/openclaw-stock-home/.openclaw/backups"
@@ -231,23 +237,29 @@ if [[ "${UPLOAD_GDRIVE}" == "true" ]]; then
   # Check if gog CLI is available
   if command -v gog &> /dev/null; then
     # Export GOG_KEYRING_PASSWORD for non-interactive auth
-    export GOG_KEYRING_PASSWORD="${GOG_KEYRING_PASSWORD:-Ret13rer?}"
-    
-    # Upload backup using gog CLI
-    log "Uploading backup file using gog CLI..."
-    if gog drive upload "${BACKUP_PATH}" --parent "${PARENT_ID}" --name "${BACKUP_FILE}" 2>&1 | tee -a "${LOG_FILE}"; then
+    if [[ -z "${GOG_KEYRING_PASSWORD:-}" ]]; then
+      log "WARNING: GOG_KEYRING_PASSWORD not set; skipping Google Drive upload"
+      log "Run setup.sh to configure non-interactive auth"
+    elif [[ -z "${GOG_ACCOUNT:-}" ]]; then
+      log "WARNING: GOG_ACCOUNT not set; skipping Google Drive upload"
+      log "Run setup.sh to configure account"
+    else
+      # Upload backup using gog CLI
+      log "Uploading backup file using gog CLI..."
+      if gog --account "${GOG_ACCOUNT}" drive upload "${BACKUP_PATH}" --parent "${PARENT_ID}" --name "${BACKUP_FILE}" 2>&1 | tee -a "${LOG_FILE}"; then
       log "Backup file uploaded successfully"
     else
       log "WARNING: Google Drive upload of backup failed"
     fi
     
-    # Upload manifest
-    log "Uploading manifest file using gog CLI..."
-    MANIFEST_BASENAME=$(basename "${MANIFEST_FILE}")
-    if gog drive upload "${MANIFEST_FILE}" --parent "${PARENT_ID}" --name "${MANIFEST_BASENAME}" 2>&1 | tee -a "${LOG_FILE}"; then
-      log "Manifest file uploaded successfully"
-    else
-      log "WARNING: Google Drive upload of manifest failed"
+      # Upload manifest
+      log "Uploading manifest file using gog CLI..."
+      MANIFEST_BASENAME=$(basename "${MANIFEST_FILE}")
+      if gog --account "${GOG_ACCOUNT}" drive upload "${MANIFEST_FILE}" --parent "${PARENT_ID}" --name "${MANIFEST_BASENAME}" 2>&1 | tee -a "${LOG_FILE}"; then
+        log "Manifest file uploaded successfully"
+      else
+        log "WARNING: Google Drive upload of manifest failed"
+      fi
     fi
   else
     log "WARNING: gog CLI not found, skipping Google Drive upload"

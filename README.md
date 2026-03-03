@@ -4,6 +4,16 @@ Smart OpenClaw disaster recovery and backup system.
 
 ## Quick Start
 
+### 0) One-time setup (recommended)
+```bash
+./setup.sh
+```
+
+This configures:
+- non-interactive `gog` auth inputs for cron (`.env.backup`)
+- default account wiring for uploads
+- daily cron job at 03:00 UTC
+
 ### Create Backup
 ```bash
 ./backup.sh [--dry-run] [--upload-google-drive] [--cron]
@@ -12,7 +22,7 @@ Smart OpenClaw disaster recovery and backup system.
 | Option | Description |
 |--------|-------------|
 | `--dry-run` | Test without creating backup |
-| `--upload-google-drive` | Upload backup to Google Drive (requires `gog` CLI) |
+| `--upload-google-drive` | Upload backup to Google Drive (requires `gog` CLI + setup.sh auth) |
 | `--cron` | Enable cron mode (cleanup old backups) |
 
 ### Restore
@@ -71,7 +81,12 @@ Add to crontab for daily backups at 03:00:
 - `docs/RESTORATION_GUIDE.md` - Detailed restore procedure
 - `docs/GOOGLE_DRIVE_SETUP.md` - Google Drive setup guide
 
-## License
+## Auth flow note (simple vs efficient)
+
+- **Simple flow** (`gog auth add ... --manual`) is easiest and most reliable for remote servers.
+- It is **not slower for daily backups** in any meaningful way.
+- Auth overhead is paid once; refresh tokens are reused automatically.
+- Runtime impact is minimal (small token validation/refresh only when needed).
 
 ## License
 
