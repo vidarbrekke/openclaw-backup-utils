@@ -243,7 +243,8 @@ if [[ "${UPLOAD_GDRIVE}" == "true" ]]; then
     
     # Upload manifest
     log "Uploading manifest file using gog CLI..."
-    if gog drive upload "${BACKUP_DIR}/${MANIFEST_FILE}" --parent "${PARENT_ID}" --name "$(basename "${MANIFEST_FILE}")" 2>&1 | tee -a "${LOG_FILE}"; then
+    MANIFEST_BASENAME=$(basename "${MANIFEST_FILE}")
+    if gog drive upload "${MANIFEST_FILE}" --parent "${PARENT_ID}" --name "${MANIFEST_BASENAME}" 2>&1 | tee -a "${LOG_FILE}"; then
       log "Manifest file uploaded successfully"
     else
       log "WARNING: Google Drive upload of manifest failed"
