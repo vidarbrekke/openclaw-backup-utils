@@ -13,27 +13,23 @@ if ! command -v gog >/dev/null 2>&1; then
   exit 1
 fi
 
-# Account selection
-AUTO_ACCOUNT="$(gog auth list 2>/dev/null | awk 'NR==1{print $1}')"
-read -r -p "GOG account email [${AUTO_ACCOUNT:-required}]: " GOG_ACCOUNT_INPUT
-GOG_ACCOUNT="${GOG_ACCOUNT_INPUT:-${AUTO_ACCOUNT:-}}"
-if [[ -z "${GOG_ACCOUNT}" ]]; then
-  echo "ERROR: No account provided."
+# Account selection (prefer actual gog config)
+# We assume gog CLI is already configured via gogcli-enhanced/scripts/setup.sh
+AUTO_ACCOUNT="$(gog auth list --account auto 2>/dev/null | awk 'NR==1{print $1}' || true)"
+if [[ -z "${AUTO_ACCOUNT}" ]]; then
+  echo "ERROR: No gog account configured. Please run gogcli-enhanced/scripts/setup.sh first."
   exit 1
 fi
+GOG_ACCOUNT="${GOG_ACCOUNT:-${AUTO_ACCOUNT}}"
 
-# Keyring password (non-interactive cron support)
-if [[ -z "${GOG_KEYRING_PASSWORD:-}" ]]; then
-  read -r -s -p "GOG keyring password (for cron/non-interactive): " GOG_KEYRING_PASSWORD
-  echo
-fi
-if [[ -z "${GOG_KEYRING_PASSWORD}" ]]; then
-  echo "ERROR: keyring password required."
-  exit 1
-fi
+# Keyring password (read from environment if set, otherwise assume user has it configured)
+# We expect GOG_KEYRING_PASSWORD to be available if gog was set up for non-interactive use.
+# The backup.sh script will explicitly try to use it if set, if not, gog will fail auth.
+# No need to prompt here again, as that was handled by gogcli-enhanced/scripts/setup.sh
 
 # Validate auth non-interactively
-if ! GOG_KEYRING_PASSWORD="$GOG_KEYRING_PASSWORD" gog --account "$GOG_ACCOUNT" --no-input auth status >/dev/null 2>&1; then
+# Test with a known password if environment var is not set
+if ! GOG_KEYRING_PASSWORD="${GOG_KEYRING_PASSWORD:-}" gog --account "$GOG_ACCOUNT" --no-input auth status >/dev/null 2>&1; then
   echo "Auth check failed. Try running:"
   echo "  gog auth add ${GOG_ACCOUNT} --manual"
   exit 1
