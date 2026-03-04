@@ -26,7 +26,7 @@ echo -e "${BOLD}== OpenClaw Backup Utils Setup ==${RESET}"
 log "Checking dependencies..."
 if ! command -v gog >/dev/null 2>&1; then
   err "gog CLI not found in PATH."
-  err "Please run gogcli-enhanced/scripts/setup.sh first to install/enable gog, then rerun this script."
+  err "Run gogcli-enhanced/scripts/setup.sh --cli-only first to install gog, then rerun this script."
   exit 1
 fi
 if ! command -v jq >/dev/null 2>&1; then
@@ -40,7 +40,7 @@ log "Detecting GOG account configuration..."
 AUTO_ACCOUNT="$(gog auth list --account auto 2>/dev/null | awk 'NR==1{print $1}' || true)"
 if [[ -z "${AUTO_ACCOUNT}" ]]; then
   err "No gog account configured."
-  err "Please run gogcli-enhanced/scripts/setup.sh first to set up gog authentication, then rerun this script."
+  err "Run gogcli-enhanced/scripts/setup.sh --cli-only first to set up gog authentication, then rerun this script."
   exit 1
 fi
 GOG_ACCOUNT="${GOG_ACCOUNT:-${AUTO_ACCOUNT}}"
@@ -89,7 +89,6 @@ echo
 echo -e "${BOLD}Setup complete!${RESET}"
 log "- Configured Account: $GOG_ACCOUNT"
 log "- Cron Job: $CRON_LINE (runs daily at 03:00 UTC)"
-log "- For cron job to work, ensure GOG_KEYRING_PASSWORD is set in your crontab environment:"
-log "  Open crontab: 'crontab -e', then add 'GOG_KEYRING_PASSWORD="your_password_here"' on its own line before the backup command."
+log "For cron: ensure GOG_KEYRING_PASSWORD is set in the crontab environment (e.g. add a line before the backup command in crontab -e), or use GOG_KEYRING_PASSWORD_FILE. See gogcli-enhanced docs for headless setup."
 log "Test now: ${REPO_DIR}/backup.sh --upload-google-drive"
 echo

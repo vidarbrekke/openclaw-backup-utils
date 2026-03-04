@@ -5,14 +5,26 @@ Smart OpenClaw disaster recovery and backup system.
 ## Quick Start
 
 ### 0) One-time setup (recommended)
+
+**Prerequisite:** Install and configure the `gog` CLI using [gogcli-enhanced](https://github.com/vidarbrekke/gogcli-enhanced) with **CLI-only** mode (no MCP/OpenClaw):
+
+```bash
+# In gogcli-enhanced repo:
+./scripts/setup.sh --cli-only
+```
+
+Then run this repo’s setup to wire the backup account and cron:
+
 ```bash
 ./setup.sh
 ```
 
 This configures:
-- non-interactive `gog` auth inputs for cron (`.env.backup`)
+- non-interactive `gog` auth inputs for cron (`.env.backup` with `GOG_ACCOUNT`)
 - default account wiring for uploads
 - daily cron job at 03:00 UTC
+
+**Cron:** For the cron job to upload to Google Drive, `GOG_KEYRING_PASSWORD` (or `GOG_KEYRING_PASSWORD_FILE`) must be set in the crontab environment—e.g. add a line in `crontab -e` before the backup command, or use a wrapper that sources env. See gogcli-enhanced docs for headless keyring setup.
 
 ### Create Backup
 ```bash
@@ -51,14 +63,21 @@ This configures:
 
 ## Google Drive Setup
 
-The backup script uses the `gog` CLI (Google CLI for Workspace) for uploads.
+The backup script uses the `gog` CLI (from [gogcli-enhanced](https://github.com/vidarbrekke/gogcli-enhanced)) for uploads.
 
-`gog` is already installed at `/root/openclaw-stock-home/.local/bin/gog` and is available in your `PATH`.
+1. **Install and configure gog (one-time)** in the gogcli-enhanced repo:
+   ```bash
+   ./scripts/setup.sh --cli-only
+   ```
+   This installs `gog`, sets up OAuth and keyring, and does **not** register MCP/OpenClaw (CLI-only).
 
-To enable Google Drive uploads, authenticate with your Google account:
-```bash
-gog drive ls  # This will authenticate if needed
-```
+2. **Run this repo’s setup** so backup knows which account to use and cron is installed:
+   ```bash
+   ./setup.sh
+   ```
+   This writes `GOG_ACCOUNT` to `.env.backup` and verifies non-interactive auth (requires `GOG_KEYRING_PASSWORD` or `GOG_KEYRING_PASSWORD_FILE` in the environment for cron).
+
+3. **For cron:** Set `GOG_KEYRING_PASSWORD` (or `GOG_KEYRING_PASSWORD_FILE`) in the crontab environment so `gog` can unlock the keyring when run non-interactively.
 
 ## Configuration
 

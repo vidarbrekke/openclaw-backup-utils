@@ -230,42 +230,33 @@ log "Manifest saved: $(basename "${MANIFEST_FILE}")"
 # Upload to Google Drive if requested
 if [[ "${UPLOAD_GDRIVE}" == "true" ]]; then
   log "Uploading to Google Drive..."
-  
-  # Get parent folder ID from rules or use default
+
   PARENT_ID=$(jq -r '.parentId // "1b9uskrej-gjGVG-RmeaSYdPk0deUOa3R"' "${RULES_FILE}" 2>/dev/null || echo "1b9uskrej-gjGVG-RmeaSYdPk0deUOa3R")
-  
-  # Check if gog CLI is available
-  if command -v gog &> /dev/null; then
-    # Export GOG_KEYRING_PASSWORD for non-interactive auth
-    if [[ -z "${GOG_KEYRING_PASSWORD:-}" ]]; then
-      log "WARNING: GOG_KEYRING_PASSWORD not set; skipping Google Drive upload"
-      log "Run setup.sh to configure non-interactive auth"
-    elif [[ -z "${GOG_ACCOUNT:-}" ]]; then
-      log "WARNING: GOG_ACCOUNT not set; skipping Google Drive upload"
-      log "Run setup.sh to configure account"
-    else
-      # Upload backup using gog CLI
-      log "Uploading backup file using gog CLI..."
-      if gog --account "${GOG_ACCOUNT}" drive upload "${BACKUP_PATH}" --parent "${PARENT_ID}" --name "${BACKUP_FILE}" 2>&1 | tee -a "${LOG_FILE}"; then
-      log "Backup file uploaded successfully"
-    else
-      log "WARNING: Google Drive upload of backup failed"
-    fi
-    
-      # Upload manifest
-      log "Uploading manifest file using gog CLI..."
-      MANIFEST_BASENAME=$(basename "${MANIFEST_FILE}")
-      if gog --account "${GOG_ACCOUNT}" drive upload "${MANIFEST_FILE}" --parent "${PARENT_ID}" --name "${MANIFEST_BASENAME}" 2>&1 | tee -a "${LOG_FILE}"; then
-        log "Manifest file uploaded successfully"
-      else
-        log "WARNING: Google Drive upload of manifest failed"
-      fi
-    fi
-  else
+
+  if ! command -v gog &>/dev/null; then
     log "WARNING: gog CLI not found, skipping Google Drive upload"
-    log "To enable Google Drive uploads, ensure gog CLI is installed"
+    log "Install gog via gogcli-enhanced: ./scripts/setup.sh --cli-only"
+  elif [[ -z "${GOG_ACCOUNT:-}" ]]; then
+    log "WARNING: GOG_ACCOUNT not set; skipping Google Drive upload"
+    log "Run ./setup.sh in this repo (after gogcli-enhanced setup) to write .env.backup"
+  else
+    log "Uploading backup file using gog CLI..."
+    if ! gog --account "${GOG_ACCOUNT}" drive upload "${BACKUP_PATH}" --parent "${PARENT_ID}" --name "${BACKUP_FILE}" 2>&1 | tee -a "${LOG_FILE}"; then
+      log "WARNING: Google Drive upload of backup failed"
+      log "Ensure GOG_KEYRING_PASSWORD or GOG_KEYRING_PASSWORD_FILE is set in the environment for non-interactive auth (see setup.sh)."
+    else
+      log "Backup file uploaded successfully"
+    fi
+
+    log "Uploading manifest file using gog CLI..."
+    MANIFEST_BASENAME=$(basename "${MANIFEST_FILE}")
+    if ! gog --account "${GOG_ACCOUNT}" drive upload "${MANIFEST_FILE}" --parent "${PARENT_ID}" --name "${MANIFEST_BASENAME}" 2>&1 | tee -a "${LOG_FILE}"; then
+      log "WARNING: Google Drive upload of manifest failed"
+    else
+      log "Manifest file uploaded successfully"
+    fi
   fi
-  
+
   log "Google Drive upload complete"
 fi
 
