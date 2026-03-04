@@ -12,20 +12,9 @@ backup.log
 tmp/
 temp/
 
-# Ignore environment files (secrets)
+# Ignore environment files (secrets) - DO NOT commit
 .env
 .env.*
 .env.local
 .env*.local
-
-# Ignore node_modules
-node_modules/
-
-# Ignore .git directories
-.git/
-.gitmodules
-
-# Ignore build artifacts
-build/
-dist/
-out/
+# .env.backup - temporarily tracked for testing, remove before final commit
